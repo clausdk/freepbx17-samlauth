@@ -3,7 +3,8 @@
  * SAML Cleanup Script
  *
  * Maintenance script to clean up expired data
- * Run via cron: */5 * * * * /usr/bin/php /var/www/html/admin/modules/samlauth/scripts/cleanup.php
+ * Run via cron: star-slash-5 * * * * /usr/bin/php /var/www/html/admin/modules/samlauth/scripts/cleanup.php
+ * (Replace star-slash with the actual characters)
  */
 
 // Load FreePBX bootstrap

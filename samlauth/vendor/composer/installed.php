@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => 'freepbx/samlauth',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '22454c602681f61865822304f6cf71efd2f35601',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => false,
+    ),
+    'versions' => array(
+        'freepbx/samlauth' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '22454c602681f61865822304f6cf71efd2f35601',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'onelogin/php-saml' => array(
+            'pretty_version' => '4.3.0',
+            'version' => '4.3.0.0',
+            'reference' => 'bf5efce9f2df5d489d05e78c27003a0fc8bc50f0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../onelogin/php-saml',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'robrichards/xmlseclibs' => array(
+            'pretty_version' => '3.1.3',
+            'version' => '3.1.3.0',
+            'reference' => '2bdfd742624d739dfadbd415f00181b4a77aaf07',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../robrichards/xmlseclibs',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

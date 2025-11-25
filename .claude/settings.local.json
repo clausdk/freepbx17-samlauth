@@ -10,7 +10,17 @@
       "WebFetch(domain:gist.github.com)",
       "Bash(composer install:*)",
       "Bash(php:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(composer:*)",
+      "Bash(for file in classes/*.php)",
+      "Bash(do echo \"Checking $file...\")",
+      "Bash(done)",
+      "Bash(for file in endpoints/*.php)",
+      "Bash(for file in views/*.php)",
+      "Bash(xmllint:*)",
+      "Bash(for file in templates/*.json)",
+      "Bash(do)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []
