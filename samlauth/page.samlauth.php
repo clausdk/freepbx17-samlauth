@@ -5,6 +5,13 @@
  * Main admin interface for SAML configuration
  */
 
+if (!defined('FREEPBX_IS_AUTH')) {
+    die('No direct script access allowed');
+}
+
+// Get FreePBX object
+$FreePBX = FreePBX::Create();
+
 // Get module instance
 $module = $FreePBX->Samlauth;
 

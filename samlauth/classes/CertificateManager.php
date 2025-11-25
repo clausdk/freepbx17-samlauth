@@ -108,9 +108,8 @@ class CertificateManager {
             chgrp($this->certDir . '/sp.key', 'asterisk');
         }
 
-        // Clean up
-        openssl_pkey_free($privateKey);
-        openssl_x509_free($cert);
+        // Note: In PHP 8.x, openssl_pkey_free() and openssl_x509_free() are deprecated
+        // Resource cleanup is handled automatically by PHP's garbage collector
 
         error_log('SAML: SP certificates generated successfully');
 
@@ -206,7 +205,8 @@ class CertificateManager {
         openssl_x509_export($cert, $certPem);
         $fingerprint = openssl_x509_fingerprint($cert, $algorithm);
 
-        openssl_x509_free($cert);
+        // Note: openssl_x509_free() is deprecated in PHP 8.x
+        // Resource cleanup is handled automatically
 
         return $fingerprint;
     }

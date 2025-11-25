@@ -54,6 +54,16 @@
             </div>
         </div>
 
+        <!-- Setup Instructions -->
+        <div class="panel panel-info" id="setup-instructions-panel" style="display: none;">
+            <div class="panel-heading">
+                <h4><?php echo _("Setup Instructions"); ?></h4>
+            </div>
+            <div class="panel-body">
+                <pre id="setup-instructions" style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 4px;"></pre>
+            </div>
+        </div>
+
         <!-- Basic Configuration -->
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -196,16 +206,6 @@
                         </p>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Setup Instructions -->
-        <div class="panel panel-info" id="setup-instructions-panel" style="display: none;">
-            <div class="panel-heading">
-                <h4><?php echo _("Setup Instructions"); ?></h4>
-            </div>
-            <div class="panel-body">
-                <pre id="setup-instructions" style="white-space: pre-wrap;"></pre>
             </div>
         </div>
 

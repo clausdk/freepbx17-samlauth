@@ -19,22 +19,20 @@ class SamlConfigManager {
 
     /**
      * Build settings array for onelogin/php-saml
-     * @param int|null $idpId IdP ID
+     * @param int|null $idpId IdP ID (optional - can generate SP-only metadata)
      * @return array Settings array
      */
     public function buildSettingsArray($idpId = null) {
         // Get IdP configuration
+        $idp = null;
         if ($idpId) {
             $idp = $this->module->getIdpConfig($idpId);
             if (!$idp) {
                 throw new \Exception("IdP not found: {$idpId}");
             }
         } else {
-            // Get first enabled IdP
+            // Try to get first enabled IdP (optional for SP metadata)
             $idp = $this->module->getEnabledIdp();
-            if (!$idp) {
-                throw new \Exception("No enabled IdP configured");
-            }
         }
 
         // Build SP base URL
@@ -54,8 +52,8 @@ class SamlConfigManager {
 
         // Build settings array
         $settings = array(
-            // REQUIRED: Enable strict mode for security
-            'strict' => true,
+            // REQUIRED: Enable strict mode for security (except for SP-only metadata)
+            'strict' => ($idp !== null),
 
             // Disable debug in production
             'debug' => false,
@@ -64,24 +62,14 @@ class SamlConfigManager {
             'sp' => array(
                 'entityId' => $spBaseUrl . '/admin/modules/samlauth/endpoints/metadata.php',
                 'assertionConsumerService' => array(
-                    'url' => $spBaseUrl . '/admin/modules/samlauth/endpoints/acs.php?idp=' . $idp['id'],
+                    'url' => $spBaseUrl . '/admin/modules/samlauth/endpoints/acs.php' . ($idp ? '?idp=' . $idp['id'] : ''),
                     'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
                 ),
                 'singleLogoutService' => array(
-                    'url' => $spBaseUrl . '/admin/modules/samlauth/endpoints/sls.php?idp=' . $idp['id'],
+                    'url' => $spBaseUrl . '/admin/modules/samlauth/endpoints/sls.php' . ($idp ? '?idp=' . $idp['id'] : ''),
                     'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
                 ),
                 'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-            ),
-
-            // Identity Provider configuration
-            'idp' => array(
-                'entityId' => $idp['entity_id'],
-                'singleSignOnService' => array(
-                    'url' => $idp['sso_url'],
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-                ),
-                'x509cert' => $this->formatCertificate($idp['certificate']),
             ),
 
             // Security settings (CRITICAL)
@@ -92,16 +80,16 @@ class SamlConfigManager {
                 'logoutRequestSigned' => !empty($spKey),
                 'logoutResponseSigned' => !empty($spKey),
 
-                // Validation requirements (REQUIRED)
-                'wantMessagesSigned' => true,
-                'wantAssertionsSigned' => true,
+                // Validation requirements (REQUIRED when IdP configured)
+                'wantMessagesSigned' => ($idp !== null),
+                'wantAssertionsSigned' => ($idp !== null),
                 'wantAssertionsEncrypted' => false,
-                'wantNameId' => true,
-                'wantXMLValidation' => true,
+                'wantNameId' => ($idp !== null),
+                'wantXMLValidation' => ($idp !== null),
 
-                // Enhanced security (REQUIRED)
-                'rejectUnsolicitedResponsesWithInResponseTo' => true,
-                'destinationStrictlyMatches' => true,
+                // Enhanced security (REQUIRED when IdP configured)
+                'rejectUnsolicitedResponsesWithInResponseTo' => ($idp !== null),
+                'destinationStrictlyMatches' => ($idp !== null),
                 'rejectDeprecatedAlgorithm' => true,
 
                 // Algorithms (REQUIRED: Use SHA256 or better)
@@ -135,30 +123,54 @@ class SamlConfigManager {
             $settings['sp']['privateKey'] = $spKey;
         }
 
-        // Add SLO URL if configured
-        if (!empty($idp['slo_url'])) {
-            $settings['idp']['singleLogoutService'] = array(
-                'url' => $idp['slo_url'],
-                'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-            );
-        }
-
-        // Support certificate rollover if new certificate provided
-        if (!empty($idp['certificate_new'])) {
-            $settings['idp']['x509certMulti'] = array(
-                'signing' => array(
-                    0 => $this->formatCertificate($idp['certificate']),
-                    1 => $this->formatCertificate($idp['certificate_new']),
+        // Add IdP configuration if available
+        if ($idp) {
+            $settings['idp'] = array(
+                'entityId' => $idp['entity_id'],
+                'singleSignOnService' => array(
+                    'url' => $idp['sso_url'],
+                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
                 ),
+                'x509cert' => $this->formatCertificate($idp['certificate']),
             );
-        }
 
-        // Merge custom settings if provided
-        if (!empty($idp['settings'])) {
-            $customSettings = json_decode($idp['settings'], true);
-            if ($customSettings) {
-                $settings = array_replace_recursive($settings, $customSettings);
+            // Add SLO URL if configured
+            if (!empty($idp['slo_url'])) {
+                $settings['idp']['singleLogoutService'] = array(
+                    'url' => $idp['slo_url'],
+                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                );
             }
+
+            // Support certificate rollover if new certificate provided
+            if (!empty($idp['certificate_new'])) {
+                $settings['idp']['x509certMulti'] = array(
+                    'signing' => array(
+                        0 => $this->formatCertificate($idp['certificate']),
+                        1 => $this->formatCertificate($idp['certificate_new']),
+                    ),
+                );
+            }
+
+            // Merge custom settings if provided
+            if (!empty($idp['settings'])) {
+                $customSettings = json_decode($idp['settings'], true);
+                if ($customSettings) {
+                    $settings = array_replace_recursive($settings, $customSettings);
+                }
+            }
+        } else {
+            // No IdP configured - provide minimal IdP config for SP metadata generation
+            // Use SP cert as placeholder (this is only for generating SP metadata, not for actual authentication)
+            $placeholderCert = $spCert ? $this->formatCertificate($spCert) : '';
+            $settings['idp'] = array(
+                'entityId' => 'urn:placeholder:idp',
+                'singleSignOnService' => array(
+                    'url' => 'https://placeholder.example.com/sso',
+                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                ),
+                'x509cert' => $placeholderCert,
+            );
         }
 
         return $settings;

@@ -1,0 +1,16 @@
+# SAML Authentication Endpoints
+# Allow access to SAML endpoint PHP files
+
+# Apache 2.2
+<IfModule !mod_authz_core.c>
+	<FilesMatch "\.(php)$">
+		Allow from all
+	</FilesMatch>
+</IfModule>
+
+# Apache 2.4
+<IfModule mod_authz_core.c>
+	<FilesMatch "\.(php)$">
+		Require all granted
+	</FilesMatch>
+</IfModule>

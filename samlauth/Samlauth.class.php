@@ -211,19 +211,43 @@ class Samlauth extends \FreePBX\FreePBX_Helpers implements \FreePBX\BMO {
     }
 
     /**
-     * AJAX handler
-     * @return array Response data
+     * AJAX request checker - returns true if this module handles the request
+     * @param string $req Request command
+     * @param mixed $setting Setting reference
+     * @return bool True if this module handles the request
      */
     public function ajaxRequest($req, &$setting) {
         switch ($req) {
+            case 'test_idp':
+            case 'get_metadata':
+            case 'load_template':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * AJAX handler - processes the actual AJAX request
+     * @return array Response data
+     */
+    public function ajaxHandler() {
+        $command = $_REQUEST['command'] ?? '';
+
+        switch ($command) {
             case 'test_idp':
                 return $this->testIdpConnection($_POST['idp_id']);
             case 'get_metadata':
                 return $this->getSpMetadata();
             case 'load_template':
-                return $this->loadIdpTemplate($_POST['provider']);
+                $template = $this->loadIdpTemplate($_POST['provider']);
+                if ($template) {
+                    return array('status' => true, 'data' => $template);
+                } else {
+                    return array('status' => false, 'message' => 'Template not found');
+                }
             default:
-                return array('status' => false, 'message' => 'Unknown request');
+                return array('status' => false, 'message' => 'Unknown command');
         }
     }
 
@@ -430,11 +454,14 @@ class Samlauth extends \FreePBX\FreePBX_Helpers implements \FreePBX\BMO {
      * @return array Log entries
      */
     public function getSecurityLog($limit = 100, $offset = 0) {
+        // Ensure limit and offset are integers to prevent SQL injection
+        $limit = (int)$limit;
+        $offset = (int)$offset;
+
         $sql = "SELECT * FROM saml_security_log
                 ORDER BY created_at DESC
-                LIMIT ? OFFSET ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(array($limit, $offset));
+                LIMIT {$limit} OFFSET {$offset}";
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 

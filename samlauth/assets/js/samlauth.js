@@ -5,7 +5,7 @@
 $(document).ready(function() {
 
     // Test IdP connection
-    $('.saml-test-connection').on('click', function() {
+    $('.saml-test-connection').off('click.samlauth').on('click.samlauth', function() {
         var button = $(this);
         var idpId = button.data('idp-id');
 
@@ -45,7 +45,7 @@ $(document).ready(function() {
     });
 
     // Delete IdP confirmation
-    $('.saml-delete-idp').on('click', function() {
+    $('.saml-delete-idp').off('click.samlauth').on('click.samlauth', function() {
         var idpId = $(this).data('idp-id');
         var idpName = $(this).data('idp-name');
 
@@ -55,14 +55,14 @@ $(document).ready(function() {
     });
 
     // Load IdP template
-    $('#provider_type').on('change', function() {
+    $('#provider_type').off('change.samlauth').on('change.samlauth', function() {
         var providerType = $(this).val();
 
         if (!providerType || providerType === 'generic') {
             return;
         }
 
-        if (confirm('Load template for ' + providerType + '? This will reset the form.')) {
+        if (confirm('Load template for ' + providerType + '? This will update the form with helpful placeholders and instructions.')) {
             $.ajax({
                 url: 'ajax.php',
                 type: 'POST',
@@ -76,24 +76,62 @@ $(document).ready(function() {
                     if (response.status && response.data) {
                         var template = response.data;
 
-                        // Populate form fields
+                        // Populate name field
                         if (template.name) {
                             $('#name').val(template.name);
                         }
 
-                        // Show help text if available
+                        // Update placeholders and help text from template fields
+                        if (template.fields) {
+                            // Update Entity ID field
+                            if (template.fields.entity_id) {
+                                $('#entity_id').attr('placeholder', template.fields.entity_id.placeholder || '');
+                                if (template.fields.entity_id.help) {
+                                    $('#entity_id').next('.help-block').text(template.fields.entity_id.help);
+                                }
+                            }
+
+                            // Update SSO URL field
+                            if (template.fields.sso_url) {
+                                $('#sso_url').attr('placeholder', template.fields.sso_url.placeholder || '');
+                                if (template.fields.sso_url.help) {
+                                    $('#sso_url').next('.help-block').text(template.fields.sso_url.help);
+                                }
+                            }
+
+                            // Update SLO URL field
+                            if (template.fields.slo_url) {
+                                $('#slo_url').attr('placeholder', template.fields.slo_url.placeholder || '');
+                                if (template.fields.slo_url.help) {
+                                    $('#slo_url').next('.help-block').text(template.fields.slo_url.help);
+                                }
+                            }
+
+                            // Update Certificate field
+                            if (template.fields.certificate && template.fields.certificate.help) {
+                                $('#certificate').next('.help-block').text(template.fields.certificate.help);
+                            }
+                        }
+
+                        // Show setup instructions
                         if (template.setup_instructions) {
                             var instructions = template.setup_instructions.join('\n');
-                            $('#setup-instructions').text(instructions).show();
+                            $('#setup-instructions').text(instructions);
+                            $('#setup-instructions-panel').show();
                         }
+                    } else {
+                        alert('Failed to load template: ' + (response.message || 'Unknown error'));
                     }
+                },
+                error: function() {
+                    alert('Failed to load template');
                 }
             });
         }
     });
 
     // Certificate format helper
-    $('#certificate').on('blur', function() {
+    $('#certificate').off('blur.samlauth').on('blur.samlauth', function() {
         var cert = $(this).val().trim();
 
         // Remove headers and whitespace
@@ -105,7 +143,7 @@ $(document).ready(function() {
     });
 
     // Generate certificates
-    $('#generate-certificates').on('click', function(e) {
+    $('#generate-certificates').off('click.samlauth').on('click.samlauth', function(e) {
         e.preventDefault();
 
         if (!confirm('Generate new SP certificates? This will replace existing certificates.')) {
@@ -135,7 +173,7 @@ $(document).ready(function() {
     });
 
     // Form validation
-    $('#idp-form').on('submit', function() {
+    $('#idp-form').off('submit.samlauth').on('submit.samlauth', function() {
         var errors = [];
 
         if (!$('#name').val()) {
