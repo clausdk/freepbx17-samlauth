@@ -1,0 +1,59 @@
+{
+  "name": "Okta",
+  "provider_type": "okta",
+  "description": "Okta SAML 2.0 configuration",
+  "help_url": "https://help.okta.com/en/prod/Content/Topics/Apps/Apps_App_Integration_Wizard_SAML.htm",
+  "fields": {
+    "entity_id": {
+      "label": "Identity Provider Issuer",
+      "placeholder": "http://www.okta.com/{identifier}",
+      "help": "Found in Okta > Applications > Your App > Sign On > View Setup Instructions > Identity Provider Issuer"
+    },
+    "sso_url": {
+      "label": "Identity Provider Single Sign-On URL",
+      "placeholder": "https://{your-okta-domain}.okta.com/app/{app-id}/sso/saml",
+      "help": "Found in Okta > Applications > Your App > Sign On > View Setup Instructions > Identity Provider Single Sign-On URL"
+    },
+    "slo_url": {
+      "label": "Single Logout URL",
+      "placeholder": "https://{your-okta-domain}.okta.com/app/{app-id}/slo/saml",
+      "help": "Single Logout URL (optional)",
+      "required": false
+    },
+    "certificate": {
+      "label": "X.509 Certificate",
+      "help": "Download from Okta > Applications > Your App > Sign On > View Setup Instructions > X.509 Certificate"
+    }
+  },
+  "attribute_mappings": {
+    "email": "email",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "displayName": "displayName",
+    "groups": "groups"
+  },
+  "setup_instructions": [
+    "1. Log in to Okta Admin Console",
+    "2. Go to Applications > Applications",
+    "3. Click 'Create App Integration'",
+    "4. Select 'SAML 2.0' and click Next",
+    "5. Enter App name: 'FreePBX'",
+    "6. In 'Configure SAML' section:",
+    "   - Single sign on URL: https://your-freepbx.com/admin/modules/samlauth/endpoints/acs.php",
+    "   - Audience URI (SP Entity ID): Download from FreePBX SAML metadata",
+    "   - Default RelayState: (leave blank)",
+    "   - Name ID format: EmailAddress",
+    "   - Application username: Email",
+    "7. Add Attribute Statements:",
+    "   - email = user.email",
+    "   - firstName = user.firstName",
+    "   - lastName = user.lastName",
+    "8. Add Group Attribute Statements (optional):",
+    "   - groups = (filter as needed)",
+    "9. Click Next, select 'I'm an Okta customer adding an internal app'",
+    "10. Click Finish",
+    "11. Go to Sign On tab > View Setup Instructions",
+    "12. Copy Identity Provider Issuer, SSO URL, and Certificate",
+    "13. Assign users/groups to the application in Okta"
+  ]
+}

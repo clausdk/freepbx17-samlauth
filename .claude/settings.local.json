@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:sangomakb.atlassian.net)",
+      "WebFetch(domain:cheatsheetseries.owasp.org)",
+      "WebFetch(domain:wiki.freepbx.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:developers.onelogin.com)",
+      "WebFetch(domain:gist.github.com)",
+      "Bash(composer install:*)",
+      "Bash(php:*)",
+      "Bash(tree:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

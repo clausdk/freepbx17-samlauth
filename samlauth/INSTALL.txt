@@ -1,0 +1,51 @@
+SAML Authentication Module - Installation Instructions
+========================================================
+
+PREREQUISITES:
+--------------
+- FreePBX 17.0+
+- PHP 7.4+ (FreePBX 17 uses PHP 8.2)
+- Composer (for installing dependencies)
+- HTTPS/SSL certificate (REQUIRED for SAML)
+
+INSTALLATION:
+-------------
+
+1. Copy the samlauth directory to your FreePBX modules directory:
+   cp -r samlauth /var/www/html/admin/modules/
+
+2. Install composer dependencies:
+   cd /var/www/html/admin/modules/samlauth
+   composer install --no-dev
+
+3. Set proper permissions:
+   chown -R asterisk:asterisk /var/www/html/admin/modules/samlauth
+   chmod 755 /var/www/html/admin/modules/samlauth
+
+4. Create certificate directory:
+   mkdir -p /etc/freepbx/saml/certs
+   chown asterisk:asterisk /etc/freepbx/saml/certs
+   chmod 700 /etc/freepbx/saml/certs
+
+5. Install the module via FreePBX Admin:
+   - Navigate to Admin > Module Admin
+   - Find "SAML Authentication"
+   - Click "Install"
+
+6. Configure SAML:
+   - Navigate to Admin > SAML Authentication
+   - Run the setup wizard to configure your Identity Provider
+
+POST-INSTALLATION:
+------------------
+
+1. The module will auto-generate SP certificates on first use
+2. Download SP metadata from: https://yourfreepbx.com/admin/modules/samlauth/endpoints/metadata.php
+3. Import SP metadata into your IdP (Azure AD, Okta, etc.)
+4. Test authentication
+
+SECURITY NOTES:
+---------------
+- SAML REQUIRES HTTPS - do not use over HTTP
+- Keep certificates in /etc/freepbx/saml/certs/ with restricted permissions
+- Monitor /var/log/asterisk/freepbx.log for SAML security events

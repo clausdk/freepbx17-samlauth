@@ -1,0 +1,59 @@
+{
+  "name": "Auth0",
+  "provider_type": "auth0",
+  "description": "Auth0 SAML 2.0 configuration",
+  "help_url": "https://auth0.com/docs/authenticate/protocols/saml",
+  "fields": {
+    "entity_id": {
+      "label": "Entity ID / Issuer",
+      "placeholder": "urn:auth0:{tenant}:{connection}",
+      "help": "Format: urn:YOUR_DOMAIN (e.g., urn:mycompany.auth0.com)"
+    },
+    "sso_url": {
+      "label": "Sign In URL",
+      "placeholder": "https://{tenant}.auth0.com/samlp/{client-id}",
+      "help": "Found in Auth0 Dashboard > Applications > Your App > Addons > SAML2 > Identity Provider Login URL"
+    },
+    "slo_url": {
+      "label": "Sign Out URL",
+      "placeholder": "https://{tenant}.auth0.com/samlp/{client-id}/logout",
+      "help": "Logout URL (optional)",
+      "required": false
+    },
+    "certificate": {
+      "label": "Signing Certificate",
+      "help": "Download from Auth0 Dashboard > Applications > Your App > Addons > SAML2 > Download Certificate"
+    }
+  },
+  "attribute_mappings": {
+    "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+    "firstName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
+    "lastName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname",
+    "displayName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+  },
+  "setup_instructions": [
+    "1. Log in to Auth0 Dashboard",
+    "2. Go to Applications > Applications",
+    "3. Create a new 'Regular Web Application' or select existing",
+    "4. Go to Addons tab",
+    "5. Enable 'SAML2 Web App'",
+    "6. In SAML2 Web App settings, configure Application Callback URL:",
+    "   - https://your-freepbx.com/admin/modules/samlauth/endpoints/acs.php",
+    "7. In Settings (JSON), add:",
+    "   {",
+    "     \"audience\": \"https://your-freepbx.com/admin/modules/samlauth/endpoints/metadata.php\",",
+    "     \"mappings\": {",
+    "       \"email\": \"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress\",",
+    "       \"given_name\": \"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname\",",
+    "       \"family_name\": \"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname\"",
+    "     },",
+    "     \"nameIdentifierFormat\": \"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"",
+    "   }",
+    "8. Click 'Enable' and save",
+    "9. Go to 'Usage' tab:",
+    "   - Copy Identity Provider Login URL (SSO URL)",
+    "   - Download Signing Certificate",
+    "10. The Issuer/Entity ID is: urn:YOUR_DOMAIN",
+    "11. Enter these values in FreePBX SAML configuration"
+  ]
+}

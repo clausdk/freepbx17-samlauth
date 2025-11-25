@@ -1,0 +1,173 @@
+/**
+ * SAML Authentication Module - Styles
+ */
+
+/* Main dashboard */
+.saml-idp-list {
+    margin-top: 20px;
+}
+
+/* Provider icons */
+.saml-provider-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Status badges */
+.saml-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.saml-status-badge.enabled {
+    background: #5cb85c;
+    color: white;
+}
+
+.saml-status-badge.disabled {
+    background: #777;
+    color: white;
+}
+
+/* Certificate display */
+.saml-cert-preview {
+    background: #f5f5f5;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+
+.saml-cert-info {
+    background: #e8f5e9;
+    padding: 15px;
+    border: 1px solid #4caf50;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.saml-cert-expired {
+    background: #ffebee;
+    border-color: #f44336;
+}
+
+.saml-cert-expiring {
+    background: #fff3e0;
+    border-color: #ff9800;
+}
+
+/* Form fields */
+.saml-form-group {
+    margin-bottom: 20px;
+}
+
+.saml-help-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #737373;
+}
+
+.saml-required::after {
+    content: ' *';
+    color: #d9534f;
+}
+
+/* Setup instructions */
+.saml-setup-instructions {
+    background: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.saml-setup-instructions h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+.saml-setup-instructions ol {
+    padding-left: 20px;
+}
+
+.saml-setup-instructions li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+/* Security logs */
+.saml-log-entry {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.saml-log-entry:hover {
+    background: #f9f9f9;
+}
+
+.saml-log-timestamp {
+    font-size: 12px;
+    color: #999;
+}
+
+.saml-log-event {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.saml-log-event.login_success {
+    color: #5cb85c;
+}
+
+.saml-log-event.login_failure {
+    color: #d9534f;
+}
+
+.saml-log-event.replay_attempt {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+/* Metadata display */
+.saml-metadata-url {
+    background: #f5f5f5;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: monospace;
+    word-break: break-all;
+}
+
+/* Loading states */
+.saml-loading {
+    text-align: center;
+    padding: 50px;
+    color: #999;
+}
+
+.saml-loading i {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .saml-cert-preview {
+        font-size: 10px;
+    }
+
+    .btn-group .btn {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+}

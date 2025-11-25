@@ -1,0 +1,56 @@
+{
+  "name": "Google Workspace",
+  "provider_type": "google",
+  "description": "Google Workspace (G Suite) SAML configuration",
+  "help_url": "https://support.google.com/a/answer/6087519",
+  "fields": {
+    "entity_id": {
+      "label": "Entity ID",
+      "placeholder": "https://accounts.google.com/o/saml2?idpid={idpid}",
+      "help": "Format: https://accounts.google.com/o/saml2?idpid=YOUR_IDP_ID"
+    },
+    "sso_url": {
+      "label": "SSO URL",
+      "placeholder": "https://accounts.google.com/o/saml2/idp?idpid={idpid}",
+      "help": "Found in Google Admin Console > Apps > Web and mobile apps > Your App > SAML > SSO URL"
+    },
+    "slo_url": {
+      "label": "SLO URL",
+      "help": "Google Workspace does not support SLO",
+      "required": false
+    },
+    "certificate": {
+      "label": "Certificate",
+      "help": "Download from Google Admin Console > Apps > Web and mobile apps > Your App > SAML > Certificate"
+    }
+  },
+  "attribute_mappings": {
+    "email": "email",
+    "firstName": "first_name",
+    "lastName": "last_name",
+    "displayName": "name"
+  },
+  "setup_instructions": [
+    "1. Log in to Google Admin Console (admin.google.com)",
+    "2. Go to Apps > Web and mobile apps",
+    "3. Click 'Add App' > 'Add custom SAML app'",
+    "4. Enter App name: 'FreePBX'",
+    "5. Click 'Continue' on Google Identity Provider details page",
+    "6. Download Certificate and copy SSO URL and Entity ID",
+    "7. In 'Service Provider Details':",
+    "   - ACS URL: https://your-freepbx.com/admin/modules/samlauth/endpoints/acs.php",
+    "   - Entity ID: Download from FreePBX SAML metadata URL",
+    "   - Start URL: https://your-freepbx.com/admin",
+    "   - Name ID format: EMAIL",
+    "   - Name ID: Basic Information > Primary email",
+    "8. Click 'Continue'",
+    "9. In 'Attribute mapping', add:",
+    "   - Google Directory attributes -> App attributes",
+    "   - Primary email -> email",
+    "   - First name -> first_name",
+    "   - Last name -> last_name",
+    "10. Click 'Finish'",
+    "11. Turn ON the service for your users/OUs",
+    "12. Enter the copied values in FreePBX SAML configuration"
+  ]
+}

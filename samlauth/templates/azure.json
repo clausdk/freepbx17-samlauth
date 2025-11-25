@@ -1,0 +1,51 @@
+{
+  "name": "Microsoft Azure AD / Entra ID",
+  "provider_type": "azure",
+  "description": "Microsoft Azure Active Directory (Entra ID) SAML configuration",
+  "help_url": "https://docs.microsoft.com/en-us/azure/active-directory/saas-apps/freepbx-tutorial",
+  "fields": {
+    "entity_id": {
+      "label": "Azure AD Identifier (Entity ID)",
+      "placeholder": "https://sts.windows.net/{tenant-id}/",
+      "help": "Found in Azure Portal > Enterprise Applications > Your App > Single sign-on > Azure AD Identifier"
+    },
+    "sso_url": {
+      "label": "Login URL",
+      "placeholder": "https://login.microsoftonline.com/{tenant-id}/saml2",
+      "help": "Found in Azure Portal > Enterprise Applications > Your App > Single sign-on > Login URL"
+    },
+    "slo_url": {
+      "label": "Logout URL",
+      "placeholder": "https://login.microsoftonline.com/{tenant-id}/saml2",
+      "help": "Same as Login URL for Azure AD",
+      "required": false
+    },
+    "certificate": {
+      "label": "Certificate (Base64)",
+      "help": "Download from Azure Portal > Enterprise Applications > Your App > Single sign-on > SAML Signing Certificate > Certificate (Base64)"
+    }
+  },
+  "attribute_mappings": {
+    "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+    "firstName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
+    "lastName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname",
+    "displayName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+    "groups": "http://schemas.microsoft.com/ws/2008/06/identity/claims/groups"
+  },
+  "setup_instructions": [
+    "1. Go to Azure Portal > Azure Active Directory > Enterprise Applications",
+    "2. Click '+ New application' > 'Create your own application'",
+    "3. Name it 'FreePBX' and select 'Integrate any other application you don't find in the gallery'",
+    "4. Go to Single sign-on > SAML",
+    "5. In 'Basic SAML Configuration', set:",
+    "   - Identifier (Entity ID): Download from FreePBX SAML metadata URL",
+    "   - Reply URL (Assertion Consumer Service URL): https://your-freepbx.com/admin/modules/samlauth/endpoints/acs.php",
+    "   - Sign on URL: https://your-freepbx.com/admin",
+    "6. In 'Attributes & Claims', ensure these claims are mapped:",
+    "   - email -> user.mail",
+    "   - givenname -> user.givenname",
+    "   - surname -> user.surname",
+    "7. Download the Certificate (Base64) and copy the Login URL",
+    "8. Enter these values in FreePBX SAML configuration"
+  ]
+}

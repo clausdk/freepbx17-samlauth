@@ -1,0 +1,15 @@
+{
+    "name": "freepbx/samlauth",
+    "description": "SAML 2.0 Single Sign-On authentication module for FreePBX 17",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "php": ">=7.4",
+        "onelogin/php-saml": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "FreePBX\\modules\\Samlauth\\": "classes/"
+        }
+    }
+}

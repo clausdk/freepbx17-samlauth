@@ -1,0 +1,58 @@
+{
+  "name": "OneLogin",
+  "provider_type": "onelogin",
+  "description": "OneLogin SAML 2.0 configuration",
+  "help_url": "https://developers.onelogin.com/saml",
+  "fields": {
+    "entity_id": {
+      "label": "Issuer URL",
+      "placeholder": "https://app.onelogin.com/saml/metadata/{app-id}",
+      "help": "Found in OneLogin > Applications > Your App > SSO > Issuer URL"
+    },
+    "sso_url": {
+      "label": "SAML 2.0 Endpoint (HTTP)",
+      "placeholder": "https://{subdomain}.onelogin.com/trust/saml2/http-post/sso/{app-id}",
+      "help": "Found in OneLogin > Applications > Your App > SSO > SAML 2.0 Endpoint (HTTP)"
+    },
+    "slo_url": {
+      "label": "SLO Endpoint (HTTP)",
+      "placeholder": "https://{subdomain}.onelogin.com/trust/saml2/http-redirect/slo/{app-id}",
+      "help": "Single Logout endpoint (optional)",
+      "required": false
+    },
+    "certificate": {
+      "label": "X.509 Certificate",
+      "help": "Download from OneLogin > Applications > Your App > SSO > X.509 Certificate > View Details"
+    }
+  },
+  "attribute_mappings": {
+    "email": "email",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "displayName": "name",
+    "groups": "groups"
+  },
+  "setup_instructions": [
+    "1. Log in to OneLogin Admin Portal",
+    "2. Go to Applications > Applications",
+    "3. Click 'Add App'",
+    "4. Search for 'SAML Test Connector (IdP)' or create custom SAML app",
+    "5. Name it 'FreePBX' and save",
+    "6. Go to Configuration tab:",
+    "   - Audience (EntityID): Download from FreePBX SAML metadata",
+    "   - Recipient: https://your-freepbx.com/admin/modules/samlauth/endpoints/acs.php",
+    "   - ACS (Consumer) URL Validator: ^https://your-freepbx.com/.*",
+    "   - ACS (Consumer) URL: https://your-freepbx.com/admin/modules/samlauth/endpoints/acs.php",
+    "7. Go to Parameters tab and add:",
+    "   - email (Email)",
+    "   - firstName (First Name)",
+    "   - lastName (Last Name)",
+    "   - groups (User Roles or Groups)",
+    "8. Go to SSO tab:",
+    "   - SAML Signature Algorithm: SHA-256",
+    "   - Copy Issuer URL and SAML 2.0 Endpoint",
+    "   - Download X.509 Certificate",
+    "9. Go to Access tab and assign users/roles",
+    "10. Enter the values in FreePBX SAML configuration"
+  ]
+}

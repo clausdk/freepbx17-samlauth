@@ -1,0 +1,123 @@
+<module>
+    <rawname>samlauth</rawname>
+    <name>SAML Authentication</name>
+    <version>17.0.1</version>
+    <publisher>FreePBX Community</publisher>
+    <license>GPLv3</license>
+    <licenselink>https://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
+    <category>Admin</category>
+    <description>
+        SAML 2.0 Single Sign-On authentication for FreePBX. Supports multiple Identity Providers including Azure AD, Okta, OneLogin, Google Workspace, and Auth0.
+    </description>
+    <changelog>
+        *17.0.1* Initial release for FreePBX 17
+        - Full SAML 2.0 protocol support
+        - Multiple IdP support with templates
+        - Just-in-time user provisioning
+        - Single Logout (SLO) support
+        - Comprehensive security features
+        - Auto-generated SP certificates
+    </changelog>
+
+    <menuitems>
+        <samlauth>SAML Authentication</samlauth>
+    </menuitems>
+
+    <depends>
+        <version>17.0.0</version>
+        <module>userman ge 17.0.0</module>
+    </depends>
+
+    <supported>
+        <version>17.0</version>
+    </supported>
+
+    <!-- Database Schema -->
+    <database>
+        <!-- IdP Configurations -->
+        <table name="saml_idp_config">
+            <field name="id" type="integer" primaryKey="true" autoincrement="true"/>
+            <field name="name" type="string" length="100" notnull="true"/>
+            <field name="provider_type" type="string" length="50" notnull="true"/>
+            <field name="entity_id" type="string" length="500" notnull="true"/>
+            <field name="sso_url" type="string" length="500" notnull="true"/>
+            <field name="slo_url" type="string" length="500" notnull="false"/>
+            <field name="certificate" type="text" notnull="true"/>
+            <field name="certificate_new" type="text" notnull="false"/>
+            <field name="settings" type="text" notnull="false"/>
+            <field name="enabled" type="boolean" default="true"/>
+            <field name="created_at" type="integer" unsigned="true" notnull="true"/>
+            <field name="updated_at" type="integer" unsigned="true" notnull="true"/>
+        </table>
+
+        <!-- User SAML Settings -->
+        <table name="saml_user_settings">
+            <field name="user_id" type="integer" primaryKey="true"/>
+            <field name="saml_enabled" type="boolean" default="false"/>
+            <field name="idp_id" type="integer" notnull="false"/>
+            <field name="saml_nameid" type="string" length="255" notnull="false"/>
+            <field name="last_login" type="integer" unsigned="true" notnull="false"/>
+        </table>
+
+        <!-- Group SAML Settings -->
+        <table name="saml_group_settings">
+            <field name="group_id" type="integer" primaryKey="true"/>
+            <field name="saml_enabled" type="boolean" default="false"/>
+            <field name="idp_id" type="integer" notnull="false"/>
+        </table>
+
+        <!-- Active SAML Sessions -->
+        <table name="saml_sessions">
+            <field name="session_id" type="string" length="255" primaryKey="true"/>
+            <field name="user_id" type="integer" notnull="true"/>
+            <field name="idp_id" type="integer" notnull="true"/>
+            <field name="session_index" type="string" length="255" notnull="false"/>
+            <field name="data" type="text" notnull="false"/>
+            <field name="created_at" type="integer" unsigned="true" notnull="true"/>
+            <field name="expires_at" type="integer" unsigned="true" notnull="true"/>
+            <field name="ip_address" type="string" length="45" notnull="false"/>
+        </table>
+
+        <!-- Processed Assertions (Replay Attack Prevention) -->
+        <table name="saml_processed_assertions">
+            <field name="assertion_id" type="string" length="255" primaryKey="true"/>
+            <field name="message_id" type="string" length="255" notnull="false"/>
+            <field name="user_id" type="integer" notnull="false"/>
+            <field name="processed_at" type="integer" unsigned="true" notnull="true"/>
+            <field name="expires_at" type="integer" unsigned="true" notnull="true"/>
+            <field name="ip_address" type="string" length="45" notnull="false"/>
+        </table>
+
+        <!-- User SAML Mappings -->
+        <table name="saml_user_mappings">
+            <field name="id" type="integer" primaryKey="true" autoincrement="true"/>
+            <field name="user_id" type="integer" notnull="true"/>
+            <field name="idp_id" type="integer" notnull="true"/>
+            <field name="saml_nameid" type="string" length="255" notnull="true"/>
+            <field name="saml_nameid_format" type="string" length="255" notnull="false"/>
+            <field name="saml_attributes" type="text" notnull="false"/>
+            <field name="last_login" type="integer" unsigned="true" notnull="true"/>
+            <field name="created_at" type="integer" unsigned="true" notnull="true"/>
+        </table>
+
+        <!-- Security Audit Log -->
+        <table name="saml_security_log">
+            <field name="id" type="integer" primaryKey="true" autoincrement="true"/>
+            <field name="event_type" type="string" length="50" notnull="true"/>
+            <field name="user_id" type="integer" notnull="false"/>
+            <field name="idp_id" type="integer" notnull="false"/>
+            <field name="message" type="text" notnull="false"/>
+            <field name="details" type="text" notnull="false"/>
+            <field name="ip_address" type="string" length="45" notnull="false"/>
+            <field name="user_agent" type="text" notnull="false"/>
+            <field name="created_at" type="integer" unsigned="true" notnull="true"/>
+        </table>
+
+        <!-- Module Settings -->
+        <table name="saml_settings">
+            <field name="setting_key" type="string" length="100" primaryKey="true"/>
+            <field name="setting_value" type="text" notnull="false"/>
+            <field name="updated_at" type="integer" unsigned="true" notnull="true"/>
+        </table>
+    </database>
+</module>

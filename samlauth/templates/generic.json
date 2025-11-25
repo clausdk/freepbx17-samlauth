@@ -1,0 +1,56 @@
+{
+  "name": "Generic SAML 2.0 IdP",
+  "provider_type": "generic",
+  "description": "Generic SAML 2.0 Identity Provider configuration",
+  "help_url": "https://en.wikipedia.org/wiki/SAML_2.0",
+  "fields": {
+    "entity_id": {
+      "label": "IdP Entity ID / Issuer",
+      "placeholder": "https://idp.example.com/saml/metadata",
+      "help": "The unique identifier for your Identity Provider (found in IdP metadata)"
+    },
+    "sso_url": {
+      "label": "Single Sign-On Service URL",
+      "placeholder": "https://idp.example.com/saml/sso",
+      "help": "The SAML SSO endpoint URL (HTTP-Redirect or HTTP-POST binding)"
+    },
+    "slo_url": {
+      "label": "Single Logout Service URL",
+      "placeholder": "https://idp.example.com/saml/slo",
+      "help": "The SAML SLO endpoint URL (optional)",
+      "required": false
+    },
+    "certificate": {
+      "label": "X.509 Certificate",
+      "help": "The public certificate used by the IdP to sign SAML assertions (Base64 encoded, without headers)"
+    }
+  },
+  "attribute_mappings": {
+    "email": "email",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "displayName": "displayName",
+    "groups": "groups",
+    "roles": "roles"
+  },
+  "setup_instructions": [
+    "1. Obtain SAML metadata from your Identity Provider",
+    "2. Extract the following values from the metadata:",
+    "   - Entity ID (entityID attribute)",
+    "   - Single Sign-On Service URL (SingleSignOnService Location)",
+    "   - X.509 Certificate (X509Certificate element)",
+    "3. Configure your IdP with FreePBX details:",
+    "   - SP Entity ID: Download from FreePBX metadata URL",
+    "   - Assertion Consumer Service (ACS) URL: https://your-freepbx.com/admin/modules/samlauth/endpoints/acs.php",
+    "   - Single Logout Service URL: https://your-freepbx.com/admin/modules/samlauth/endpoints/sls.php",
+    "   - NameID Format: urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+    "4. Configure attribute mappings in your IdP:",
+    "   - email (required)",
+    "   - firstName (optional)",
+    "   - lastName (optional)",
+    "   - groups (optional)",
+    "5. Download or copy your IdP's signing certificate",
+    "6. Enter all values in this form",
+    "7. Test the connection before enabling"
+  ]
+}
