@@ -29,7 +29,16 @@
       "Bash(curl:*)",
       "Bash(fwconsole ma:*)",
       "Bash(fwconsole reload:*)",
-      "Bash(rsync -av --delete /var/www/html/admin/modules/samlauth/ /root/freepbx17-samlauth/samlauth/ --exclude=vendor --exclude=.git)"
+      "Bash(rsync -av --delete /var/www/html/admin/modules/samlauth/ /root/freepbx17-samlauth/samlauth/ --exclude=vendor --exclude=.git)",
+      "Bash(mysql:*)",
+      "Bash(rsync:*)",
+      "Bash(sudo chmod:*)",
+      "Bash(git checkout:*)",
+      "Bash(fwconsole chown:*)",
+      "Bash(systemctl restart:*)",
+      "Bash(FreePBX /var/www/html/admin/modules/*/ucp/*.php)",
+      "Bash(timeout 5 curl:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

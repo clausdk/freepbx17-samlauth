@@ -22,6 +22,118 @@
         <form method="POST" action="?display=samlauth&view=settings" class="form-horizontal">
             <input type="hidden" name="action" value="save_settings">
 
+            <!-- Login Display Settings -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><?php echo _("Login Page Integration"); ?></h4>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            <?php echo _("Show SAML Login Button"); ?>
+                        </label>
+                        <div class="col-sm-8">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="show_login_button" value="1"
+                                           <?php echo $module->getSetting('show_login_button', '1') === '1' ? 'checked' : ''; ?>>
+                                    <?php echo _("Display SAML login button on the FreePBX login page"); ?>
+                                </label>
+                            </div>
+                            <p class="help-block">
+                                <?php echo _("When enabled, users will see a \"Login with Google\" (or other provider) button on the login page."); ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            <?php echo _("Redirect All Logins to SAML"); ?>
+                        </label>
+                        <div class="col-sm-8">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="redirect_to_saml" value="1"
+                                           <?php echo $module->getSetting('redirect_to_saml', '0') === '1' ? 'checked' : ''; ?>>
+                                    <?php echo _("Automatically redirect all login attempts to SAML (disable local login)"); ?>
+                                </label>
+                            </div>
+                            <p class="help-block">
+                                <span class="text-warning">
+                                    <i class="fa fa-warning"></i>
+                                    <?php echo _("WARNING: Ensure SAML is working correctly before enabling this! Add '?local=1' to the URL to bypass SAML if needed."); ?>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UCP Integration Settings -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><?php echo _("User Control Panel (UCP) Integration"); ?></h4>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            <?php echo _("Enable SAML for UCP"); ?>
+                        </label>
+                        <div class="col-sm-8">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="ucp_enabled" value="1"
+                                           <?php echo $module->getSetting('ucp_enabled', '1') === '1' ? 'checked' : ''; ?>>
+                                    <?php echo _("Allow SAML authentication in User Control Panel"); ?>
+                                </label>
+                            </div>
+                            <p class="help-block">
+                                <?php echo _("When enabled, users can log into UCP using SAML/SSO."); ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            <?php echo _("Show SAML Button in UCP"); ?>
+                        </label>
+                        <div class="col-sm-8">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="ucp_show_button" value="1"
+                                           <?php echo $module->getSetting('ucp_show_button', '1') === '1' ? 'checked' : ''; ?>>
+                                    <?php echo _("Display SAML login button on UCP login page"); ?>
+                                </label>
+                            </div>
+                            <p class="help-block">
+                                <?php echo _("When enabled, users will see a \"Login with Google\" (or other provider) button on the UCP login page."); ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            <?php echo _("Redirect UCP Logins to SAML"); ?>
+                        </label>
+                        <div class="col-sm-8">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="ucp_redirect_all" value="1"
+                                           <?php echo $module->getSetting('ucp_redirect_all', '0') === '1' ? 'checked' : ''; ?>>
+                                    <?php echo _("Automatically redirect UCP login to SAML"); ?>
+                                </label>
+                            </div>
+                            <p class="help-block">
+                                <span class="text-warning">
+                                    <i class="fa fa-warning"></i>
+                                    <?php echo _("WARNING: Ensure SAML is working for UCP before enabling! Add '?local=1' to bypass."); ?>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- User Provisioning Settings -->
             <div class="panel panel-default">
                 <div class="panel-heading">

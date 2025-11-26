@@ -24,11 +24,10 @@
                 <div class="tab-pane active" style="padding: 20px 0;">
 
                     <?php
-                    // Check if setup is complete
-                    $setupComplete = $module->getSetting('setup_completed', '0') === '1';
+                    // Get all IdPs
                     $idps = $module->getAllIdpConfigs();
 
-                    if (!$setupComplete || empty($idps)) {
+                    if (empty($idps)) {
                         ?>
                         <!-- Welcome / Setup Message -->
                         <div class="alert alert-info">

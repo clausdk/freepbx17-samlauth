@@ -165,6 +165,14 @@ class Samlauth extends \FreePBX\FreePBX_Helpers implements \FreePBX\BMO {
      * @param string $page The page being loaded
      */
     public function doConfigPageInit($page) {
+        // Inject login button JavaScript on login page
+        global $amp_conf;
+        $currentPage = basename($_SERVER['PHP_SELF']);
+        if ($currentPage === 'config.php' && !isset($_SESSION['AMP_user'])) {
+            // User not logged in, we're on the login page
+            echo '<script src="modules/samlauth/assets/js/login-inject.js"></script>';
+        }
+
         // Handle form submissions
         if (isset($_POST['action'])) {
             switch ($_POST['action']) {
@@ -217,6 +225,12 @@ class Samlauth extends \FreePBX\FreePBX_Helpers implements \FreePBX\BMO {
      * @return bool True if this module handles the request
      */
     public function ajaxRequest($req, &$setting) {
+        // Allow get_login_config without authentication for login page
+        if ($req === 'get_login_config') {
+            $setting['authenticate'] = false;
+            return true;
+        }
+
         switch ($req) {
             case 'test_idp':
             case 'get_metadata':
@@ -246,8 +260,72 @@ class Samlauth extends \FreePBX\FreePBX_Helpers implements \FreePBX\BMO {
                 } else {
                     return array('status' => false, 'message' => 'Template not found');
                 }
+            case 'get_login_config':
+                return $this->getLoginConfig();
             default:
                 return array('status' => false, 'message' => 'Unknown command');
+        }
+    }
+
+    /**
+     * Get login configuration for JavaScript injection
+     * @return array Login configuration
+     */
+    private function getLoginConfig() {
+        try {
+            $showButton = $this->getSetting('show_login_button', '1');
+            $redirectAll = $this->getSetting('redirect_to_saml', '0');
+
+            if ($showButton !== '1') {
+                return array('status' => true, 'show_button' => false);
+            }
+
+            // Get enabled IdPs
+            $idps = $this->getAllIdpConfigs();
+            $enabledIdps = array_filter($idps, function($idp) {
+                return !empty($idp['enabled']);
+            });
+
+            if (empty($enabledIdps)) {
+                return array('status' => true, 'show_button' => false);
+            }
+
+            // Build IdP data for frontend
+            $protocol = (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') ? 'http' : 'https';
+            $host = $_SERVER['HTTP_HOST'];
+
+            $idpData = array();
+            foreach ($enabledIdps as $idp) {
+                $providerLabels = array(
+                    'azure' => array('text' => 'Login with Microsoft', 'icon' => 'fa-windows'),
+                    'okta' => array('text' => 'Login with Okta', 'icon' => 'fa-key'),
+                    'google' => array('text' => 'Login with Google', 'icon' => 'fa-google'),
+                    'onelogin' => array('text' => 'Login with OneLogin', 'icon' => 'fa-sign-in'),
+                    'auth0' => array('text' => 'Login with Auth0', 'icon' => 'fa-shield'),
+                    'generic' => array('text' => 'Login with ' . $idp['name'], 'icon' => 'fa-sign-in')
+                );
+
+                $provider = $providerLabels[$idp['provider_type']] ?? $providerLabels['generic'];
+
+                $idpData[] = array(
+                    'id' => $idp['id'],
+                    'name' => $idp['name'],
+                    'provider_type' => $idp['provider_type'],
+                    'button_text' => $provider['text'],
+                    'icon' => $provider['icon'],
+                    'login_url' => "{$protocol}://{$host}/admin/modules/samlauth/endpoints/login.php?idp={$idp['id']}"
+                );
+            }
+
+            return array(
+                'status' => true,
+                'show_button' => true,
+                'redirect_all' => ($redirectAll === '1'),
+                'idps' => $idpData
+            );
+
+        } catch (\Exception $e) {
+            return array('status' => false, 'message' => $e->getMessage());
         }
     }
 
@@ -557,9 +635,32 @@ class Samlauth extends \FreePBX\FreePBX_Helpers implements \FreePBX\BMO {
      */
     private function handleSaveSettings() {
         try {
+            // Login page integration
+            $this->setSetting('show_login_button', isset($_POST['show_login_button']) ? '1' : '0');
+            $this->setSetting('redirect_to_saml', isset($_POST['redirect_to_saml']) ? '1' : '0');
+
+            // UCP integration
+            $this->setSetting('ucp_enabled', isset($_POST['ucp_enabled']) ? '1' : '0');
+            $this->setSetting('ucp_show_button', isset($_POST['ucp_show_button']) ? '1' : '0');
+            $this->setSetting('ucp_redirect_all', isset($_POST['ucp_redirect_all']) ? '1' : '0');
+
+            // User provisioning
             $this->setSetting('jit_provisioning_enabled', isset($_POST['jit_provisioning_enabled']) ? '1' : '0');
             $this->setSetting('jit_default_sections', $_POST['jit_default_sections'] ?? '*');
-            $this->setSetting('session_timeout', (int)$_POST['session_timeout']);
+            $this->setSetting('allowed_email_domains', $_POST['allowed_email_domains'] ?? '');
+
+            // Session settings
+            $this->setSetting('session_timeout', (int)($_POST['session_timeout'] ?? 28800));
+            $this->setSetting('assertion_cache_ttl', (int)($_POST['assertion_cache_ttl'] ?? 3600));
+
+            // Security & logging
+            $this->setSetting('log_retention_days', (int)($_POST['log_retention_days'] ?? 90));
+            $this->setSetting('alert_email', $_POST['alert_email'] ?? '');
+            $this->setSetting('log_failed_logins', isset($_POST['log_failed_logins']) ? '1' : '0');
+
+            // Advanced settings
+            $this->setSetting('force_https', isset($_POST['force_https']) ? '1' : '0');
+            $this->setSetting('debug_mode', isset($_POST['debug_mode']) ? '1' : '0');
 
             $_SESSION['saml_message'] = array(
                 'type' => 'success',

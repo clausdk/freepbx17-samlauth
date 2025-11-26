@@ -121,7 +121,7 @@
                     </label>
                     <div class="col-sm-9">
                         <input type="url" name="slo_url" id="slo_url" class="form-control"
-                               value="<?php echo $isEdit ? htmlspecialchars($idp['slo_url']) : ''; ?>"
+                               value="<?php echo $isEdit ? htmlspecialchars($idp['slo_url'] ?? '') : ''; ?>"
                                placeholder="https://idp.example.com/saml/slo">
                         <p class="help-block">
                             <?php echo _("The SAML SLO endpoint URL (optional)"); ?>
@@ -161,7 +161,7 @@
                     </label>
                     <div class="col-sm-9">
                         <textarea name="certificate_new" id="certificate_new" class="form-control saml-cert-preview"
-                                  rows="6"><?php echo $isEdit ? htmlspecialchars($idp['certificate_new']) : ''; ?></textarea>
+                                  rows="6"><?php echo $isEdit ? htmlspecialchars($idp['certificate_new'] ?? '') : ''; ?></textarea>
                         <p class="help-block">
                             <?php echo _("Optional: New certificate for certificate rollover (supports both old and new during transition)"); ?>
                         </p>
@@ -200,7 +200,7 @@
                     </label>
                     <div class="col-sm-9">
                         <textarea name="settings" id="settings" class="form-control"
-                                  rows="6"><?php echo $isEdit ? htmlspecialchars($idp['settings']) : ''; ?></textarea>
+                                  rows="6"><?php echo $isEdit ? htmlspecialchars($idp['settings'] ?? '') : ''; ?></textarea>
                         <p class="help-block">
                             <?php echo _("Advanced: Provider-specific settings in JSON format"); ?>
                         </p>

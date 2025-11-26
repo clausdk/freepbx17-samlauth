@@ -1,0 +1,25 @@
+# SAML UCP Module Access Rules
+
+# Apache 2.2
+<IfModule !mod_authz_core.c>
+	# Allow only public AJAX endpoint for direct HTTP access
+	<FilesMatch "^ajax-public\.php$">
+		Allow from all
+	</FilesMatch>
+	# Deny all other PHP files (including Samlauth.class.php which should only be loaded internally by UCP)
+	<FilesMatch "^(?!ajax-public\.php$).*\.php$">
+		Deny from all
+	</FilesMatch>
+</IfModule>
+
+# Apache 2.4
+<IfModule mod_authz_core.c>
+	# Allow only public AJAX endpoint for direct HTTP access
+	<FilesMatch "^ajax-public\.php$">
+		Require all granted
+	</FilesMatch>
+	# Deny all other PHP files (including Samlauth.class.php which should only be loaded internally by UCP)
+	<FilesMatch "^(?!ajax-public\.php$).*\.php$">
+		Require all denied
+	</FilesMatch>
+</IfModule>
